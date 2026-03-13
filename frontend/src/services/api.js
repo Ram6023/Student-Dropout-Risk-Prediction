@@ -1,9 +1,20 @@
 import axios from 'axios';
 
-// Use relative path in production (Vercel) and absolute in local dev
-const API_BASE_URL = import.meta.env.MODE === 'production' 
-  ? '/api' 
-  : 'http://localhost:8000';
+// Detect environment automatically
+const getBaseURL = () => {
+  // If we are on Vercel (or any production domain), use the relative /api path
+  if (typeof window !== 'undefined') {
+    const { hostname } = window.location;
+    if (hostname !== 'localhost' && hostname !== '127.0.0.1') {
+      return '/api';
+    }
+  }
+  
+  // Local development defaults to the uvicorn port
+  return 'http://localhost:8000';
+};
+
+const API_BASE_URL = getBaseURL();
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
@@ -44,7 +55,10 @@ export const predictDropoutCSV = async (file) => {
 
 const handleError = (error) => {
   if (error.response) {
-    throw new Error(error.response.data?.detail || `Server error: ${error.response.status}`);
+    // Attempt to extract detail from FastAPI error response
+    const detail = error.response.data?.detail;
+    const msg = Array.isArray(detail) ? detail[0]?.msg : detail;
+    throw new Error(msg || `Server error: ${error.response.status}`);
   } else if (error.request) {
     throw new Error('Unable to reach the server. Please check your connection.');
   } else {
