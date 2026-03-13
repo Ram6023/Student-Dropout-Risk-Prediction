@@ -10,42 +10,45 @@ const apiClient = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-  timeout: 15000,
+  timeout: 30000,
 });
 
 /**
- * Send student data to the backend for dropout risk prediction.
- *
- * Expected request body:
- * {
- *   "attendance": 75,
- *   "sem1_cgpa": 5.0,
- *   "sem2_cgpa": 5.0,
- *   "fee_paid": 1
- * }
- *
- * @param {Object} studentData - The student academic data
- * @returns {Promise<Object>} - The prediction result
+ * Single prediction
  */
 export const predictDropoutRisk = async (studentData) => {
   try {
     const response = await apiClient.post('/predict', studentData);
     return response.data;
   } catch (error) {
-    if (error.response) {
-      // Server responded with an error status
-      throw new Error(
-        error.response.data?.detail ||
-        `Server error: ${error.response.status}`
-      );
-    } else if (error.request) {
-      // Request was made but no response received
-      throw new Error(
-        'Unable to reach the prediction server. Please check your connection or try again later.'
-      );
-    } else {
-      throw new Error(`Request failed: ${error.message}`);
-    }
+    handleError(error);
+  }
+};
+
+/**
+ * Bulk prediction via CSV
+ */
+export const predictDropoutCSV = async (file) => {
+  const formData = new FormData();
+  formData.append('file', file);
+  
+  try {
+    const response = await axios.post(`${API_BASE_URL}/predict-csv`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    });
+    return response.data;
+  } catch (error) {
+    handleError(error);
+  }
+};
+
+const handleError = (error) => {
+  if (error.response) {
+    throw new Error(error.response.data?.detail || `Server error: ${error.response.status}`);
+  } else if (error.request) {
+    throw new Error('Unable to reach the server. Please check your connection.');
+  } else {
+    throw new Error(`Request failed: ${error.message}`);
   }
 };
 

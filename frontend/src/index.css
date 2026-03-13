@@ -40,43 +40,26 @@ body {
 
 #root { position: relative; z-index: 1; }
 
-/* ── Scrollbar ── */
-::-webkit-scrollbar { width: 4px; }
+/* ── Scrollbar Utilities ── */
+::-webkit-scrollbar { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: rgba(16, 185, 129, 0.25); border-radius: 10px; }
 
+.scrollbar-none {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
 /* ── Animations ── */
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-@keyframes slideUp {
-  from { opacity: 0; transform: translateY(24px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-@keyframes slideInRight {
-  from { opacity: 0; transform: translateX(30px); }
-  to { opacity: 1; transform: translateX(0); }
-}
-@keyframes scaleIn {
-  from { opacity: 0; transform: scale(0.92); }
-  to { opacity: 1; transform: scale(1); }
-}
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-@keyframes gradientShift {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-}
-@keyframes borderGlow {
-  0%, 100% { border-color: rgba(16, 185, 129, 0.15); }
-  50% { border-color: rgba(16, 185, 129, 0.3); }
-}
-@keyframes countUp {
-  from { opacity: 0; transform: scale(0.5) translateY(10px); }
-  to { opacity: 1; transform: scale(1) translateY(0); }
-}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideInRight { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes scaleIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes countUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
 .anim-fade { animation: fadeIn 0.5s ease-out both; }
 .anim-up { animation: slideUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) both; }
@@ -89,9 +72,6 @@ body {
 .d3 { animation-delay: 0.15s; }
 .d4 { animation-delay: 0.2s; }
 .d5 { animation-delay: 0.25s; }
-.d6 { animation-delay: 0.3s; }
-.d7 { animation-delay: 0.35s; }
-.d8 { animation-delay: 0.4s; }
 
 /* ── Spinner ── */
 .spinner {
@@ -101,38 +81,57 @@ body {
   border-radius: 50%;
   animation: spin 0.6s linear infinite;
 }
+.spinner-sm {
+  width: 16px; height: 16px;
+  border: 2px solid rgba(16, 185, 129, 0.2);
+  border-top-color: #34d399;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
 
-/* ── Card base ── */
+/* ── UI Components ── */
 .card {
   background: var(--color-surface-card);
   border: 1px solid var(--color-border);
-  border-radius: 16px;
+  border-radius: 20px;
 }
 .card-raised {
   background: var(--color-surface-raised);
   border: 1px solid var(--color-border);
-  border-radius: 14px;
+  border-radius: 16px;
 }
 
-/* ── Input ── */
 .field-input {
   width: 100%;
   background: var(--color-surface-input);
   border: 1px solid var(--color-border);
-  border-radius: 10px;
-  padding: 10px 14px;
-  font-size: 13px;
+  border-radius: 12px;
+  padding: 12px 16px;
+  font-size: 14px;
   color: #e4e4e7;
   outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition: all 0.2s;
+  appearance: none;
 }
 .field-input::placeholder { color: #3f3f46; }
 .field-input:focus {
   border-color: rgba(16, 185, 129, 0.4);
-  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.08);
+  background: rgba(16, 185, 129, 0.02);
+  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.08);
 }
 
-/* ── Gauge arc ── */
+.btn-primary {
+  @apply bg-accent-500 text-surface font-bold rounded-xl transition-all duration-300 hover:bg-accent-400 active:scale-95 disabled:opacity-50 disabled:pointer-events-none;
+  box-shadow: 0 4px 14px -2px rgba(16, 185, 129, 0.4);
+}
+
+/* ── Gauge ── */
 .gauge-track {
-  transition: stroke-dashoffset 1.8s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: stroke-dashoffset 2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ── Mobile Layout Fixes ── */
+@media (max-width: 640px) {
+  .card { border-radius: 16px; }
+  .field-input { font-size: 16px; /* Prevent zoom on iOS */ }
 }

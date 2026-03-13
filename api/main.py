@@ -1,58 +1,74 @@
-"""
-FastAPI Backend — Student Dropout Risk Prediction
----------------------------------------------------
-POST /predict  →  accepts 4 features, returns risk prediction.
-"""
-
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
-from model import predict_dropout
+from api.model import predict_dropout
+import pandas as pd
+import io
+import json
 
 app = FastAPI(
     title="Student Dropout Risk Prediction API",
     description="ML-powered prediction of student dropout probability.",
-    version="1.0.0",
+    version="1.5.0",
 )
 
-# ── CORS — allow the React frontend at localhost:5173 ──
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-
-# ── Request schema ──
 class StudentData(BaseModel):
-    attendance: float = Field(..., ge=0, le=100, description="Attendance percentage (0–100)")
-    sem1_cgpa: float = Field(..., ge=0, le=10, description="Semester 1 CGPA (0–10)")
-    sem2_cgpa: float = Field(..., ge=0, le=10, description="Semester 2 CGPA (0–10)")
-    fee_paid: int = Field(..., ge=0, le=1, description="Fee paid: 1 = Yes, 0 = No")
+    attendance: float = Field(..., ge=0, le=100)
+    sem1_cgpa: float = Field(..., ge=0, le=10)
+    sem2_cgpa: float = Field(..., ge=0, le=10)
+    fee_paid: int = Field(..., ge=0, le=1)
 
-
-# ── Prediction endpoint ──
 @app.post("/predict")
 async def predict(data: StudentData):
     try:
-        result = predict_dropout(
-            attendance=data.attendance,
-            sem1_cgpa=data.sem1_cgpa,
-            sem2_cgpa=data.sem2_cgpa,
-            fee_paid=data.fee_paid,
-        )
-        return result
+        return predict_dropout(data.attendance, data.sem1_cgpa, data.sem2_cgpa, data.fee_paid)
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Prediction failed: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
 
+@app.post("/predict-csv")
+async def predict_csv(file: UploadFile = File(...)):
+    if not file.filename.endswith('.csv'):
+        raise HTTPException(status_code=400, detail="Only CSV files are allowed.")
+    
+    try:
+        contents = await file.read()
+        df = pd.read_csv(io.BytesIO(contents))
+        
+        # Required columns mapping (case-insensitive)
+        required = {'attendance', 'sem1_cgpa', 'sem2_cgpa', 'fee_paid'}
+        cols = {c.lower(): c for c in df.columns}
+        
+        if not required.issubset(set(cols.keys())):
+            missing = required - set(cols.keys())
+            raise HTTPException(status_code=400, detail=f"Missing columns: {', '.join(missing)}")
 
-# ── Health check ──
-@app.get("/")
-async def root():
-    return {"status": "ok", "message": "Student Dropout Prediction API is running."}
+        results = []
+        for _, row in df.iterrows():
+            pred = predict_dropout(
+                float(row[cols['attendance']]),
+                float(row[cols['sem1_cgpa']]),
+                float(row[cols['sem2_cgpa']]),
+                int(row[cols['fee_paid']])
+            )
+            res_row = row.to_dict()
+            res_row.update({
+                "dropout_probability": f"{round(pred['probability'] * 100, 1)}%",
+                "risk_level": pred['risk_level'],
+                "recommendation": pred['prediction']
+            })
+            results.append(res_row)
 
+        return results
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"CSV Processing error: {str(e)}")
 
 @app.get("/health")
 async def health():
