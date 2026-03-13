@@ -43,7 +43,7 @@ const MainDashboard: React.FC<MainDashboardProps> = ({ history }) => {
                 <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0}/>
               </linearGradient>
             </defs>
-            <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" vertical={false} />
+            {/* <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" vertical={false} /> */}
             <XAxis dataKey="name" stroke="#64748b" fontSize={11} tickLine={false} axisLine={false} />
             <YAxis stroke="#64748b" fontSize={11} tickLine={false} axisLine={false} />
             <Tooltip content={<CustomTooltip />} cursor={{stroke: '#8b5cf6', strokeWidth: 1}} />
@@ -109,17 +109,17 @@ const MainDashboard: React.FC<MainDashboardProps> = ({ history }) => {
       <ChartCard title="Academic Trajectory" span="col-span-12 lg:col-span-7">
         <ResponsiveContainer width="100%" height={250}>
             <LineChart data={lineData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" vertical={false} />
-                <XAxis dataKey="name" stroke="#64748b" fontSize={11} tickLine={false} axisLine={false} />
-                <YAxis stroke="#64748b" fontSize={11} tickLine={false} axisLine={false} />
+                {/* <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" vertical={false} /> */}
+                <XAxis dataKey="name" stroke="#475569" fontSize={10} tickLine={false} axisLine={false} />
+                <YAxis stroke="#475569" fontSize={10} tickLine={false} axisLine={false} />
                 <Tooltip content={<CustomTooltip />} />
                 <Line 
                     type="monotone" 
                     dataKey="value" 
                     stroke="#8b5cf6" 
-                    strokeWidth={3} 
-                    dot={{ r: 4, fill: '#8b5cf6', strokeWidth: 2, stroke: '#020617' }} 
-                    activeDot={{ r: 6, strokeWidth: 0 }} 
+                    strokeWidth={2} 
+                    dot={false}
+                    activeDot={{ r: 4, strokeWidth: 0, fill: '#8b5cf6' }} 
                     animationDuration={2000}
                 />
             </LineChart>

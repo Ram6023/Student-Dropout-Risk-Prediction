@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import { GradientDots } from '@/components/ui/gradient-dots';
 import StatGrid from '../components/CommandCenter/StatGrid';
@@ -61,12 +61,10 @@ const Home = () => {
         <div className="relative min-h-screen bg-slate-950 text-slate-400 selection:bg-brand-500/30 selection:text-brand-200 overflow-x-hidden">
             {/* ── High-End Animated Background ── */}
             <GradientDots 
-                dotSize={6} 
-                spacing={25} 
-                duration={40} 
-                colorCycleDuration={10} 
+                dotSize={2} 
+                spacing={45} 
                 backgroundColor="#020617" 
-                className="opacity-40"
+                className="opacity-60"
             />
 
             {/* ── Progressive Blur Header ── */}
