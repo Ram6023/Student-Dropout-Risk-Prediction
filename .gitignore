@@ -1,0 +1,8 @@
+node_modules/
+.env
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+frontend/dist/
+.DS_Store
+.vercel/

@@ -1,0 +1,138 @@
+@import "tailwindcss";
+
+/* ── Design Tokens ── */
+@theme {
+  --color-accent-50: #ecfdf5;
+  --color-accent-100: #d1fae5;
+  --color-accent-200: #a7f3d0;
+  --color-accent-300: #6ee7b7;
+  --color-accent-400: #34d399;
+  --color-accent-500: #10b981;
+  --color-accent-600: #059669;
+  --color-accent-700: #047857;
+  --color-accent-800: #065f46;
+  --color-accent-900: #064e3b;
+
+  --color-danger: #f43f5e;
+  --color-warning: #f59e0b;
+  --color-success: #10b981;
+
+  --color-surface: #0a0a0f;
+  --color-surface-card: #111118;
+  --color-surface-raised: #1a1a24;
+  --color-surface-input: #13131c;
+  --color-border: rgba(255, 255, 255, 0.06);
+
+  --font-sans: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+/* ── Reset & Base ── */
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-sans);
+  background: var(--color-surface);
+  color: #a1a1aa;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+#root { position: relative; z-index: 1; }
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(16, 185, 129, 0.25); border-radius: 10px; }
+
+/* ── Animations ── */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(30px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.92); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+@keyframes borderGlow {
+  0%, 100% { border-color: rgba(16, 185, 129, 0.15); }
+  50% { border-color: rgba(16, 185, 129, 0.3); }
+}
+@keyframes countUp {
+  from { opacity: 0; transform: scale(0.5) translateY(10px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.anim-fade { animation: fadeIn 0.5s ease-out both; }
+.anim-up { animation: slideUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.anim-right { animation: slideInRight 0.6s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.anim-scale { animation: scaleIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.anim-count { animation: countUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+.d1 { animation-delay: 0.05s; }
+.d2 { animation-delay: 0.1s; }
+.d3 { animation-delay: 0.15s; }
+.d4 { animation-delay: 0.2s; }
+.d5 { animation-delay: 0.25s; }
+.d6 { animation-delay: 0.3s; }
+.d7 { animation-delay: 0.35s; }
+.d8 { animation-delay: 0.4s; }
+
+/* ── Spinner ── */
+.spinner {
+  width: 32px; height: 32px;
+  border: 2.5px solid rgba(16, 185, 129, 0.15);
+  border-top-color: #34d399;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+/* ── Card base ── */
+.card {
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+}
+.card-raised {
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+}
+
+/* ── Input ── */
+.field-input {
+  width: 100%;
+  background: var(--color-surface-input);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 13px;
+  color: #e4e4e7;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.field-input::placeholder { color: #3f3f46; }
+.field-input:focus {
+  border-color: rgba(16, 185, 129, 0.4);
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.08);
+}
+
+/* ── Gauge arc ── */
+.gauge-track {
+  transition: stroke-dashoffset 1.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
